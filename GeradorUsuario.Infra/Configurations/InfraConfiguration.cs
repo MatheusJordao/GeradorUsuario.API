@@ -1,6 +1,6 @@
 ﻿using GeradorUsuario.Domain.Interfaces;
 using GeradorUsuario.Infra.Data;
-using GeradorUsuario.Infra.Repositories;
+using GeradorUsuario.Infra.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +15,7 @@ namespace GeradorUsuario.Infra.Configurations
             services.AddDbContext<UserDbContext>(options => options.UseNpgsql(connectionString));
 
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IEnderecoRepository, EnderecoRepository>();
             
             return services;
         }

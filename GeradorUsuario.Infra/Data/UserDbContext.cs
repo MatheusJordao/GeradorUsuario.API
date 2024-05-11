@@ -3,12 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GeradorUsuario.Infra.Data
 {
-    public class UserDbContext : DbContext
+    public class UserDbContext(DbContextOptions<UserDbContext> options) : DbContext(options)
     {
-        public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
-        {
-        }
-
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Endereco> Enderecos { get; set; }
     }
 }

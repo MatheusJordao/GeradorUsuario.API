@@ -3,7 +3,7 @@ using GeradorUsuario.Domain.Interfaces;
 using GeradorUsuario.Infra.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace GeradorUsuario.Infra.Repositories
+namespace GeradorUsuario.Infra.Persistence.Repositories
 {
     public class UsuarioRepository(UserDbContext dbContext) : IUsuarioRepository
     {
@@ -28,8 +28,12 @@ namespace GeradorUsuario.Infra.Repositories
         public async Task Delete(Guid uuid)
         {
             var usuario = await GetByIdAsync(uuid);
-            _dbContext.Usuarios.Remove(usuario);
-            await SaveChangesAsync();
+
+            if (usuario != null)
+            {
+                _dbContext.Usuarios.Remove(usuario);
+                await SaveChangesAsync();
+            }
         }
 
         public async Task SaveChangesAsync()
