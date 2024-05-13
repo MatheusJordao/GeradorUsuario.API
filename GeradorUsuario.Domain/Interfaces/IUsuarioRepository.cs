@@ -8,6 +8,7 @@ namespace GeradorUsuario.Domain.Interfaces
         Task<Usuario?> GetByIdAsync(Guid uuid);
         Task AddAsync(Usuario usuario);
         Task Delete(Guid uuid);
+        Task<bool> ExistsByEmail(string email);
         Task SaveChangesAsync();
     }
 }

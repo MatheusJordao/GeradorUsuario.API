@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuários</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .edit-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Lista de Usuários</h2>
+    <table id="user-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="user-list"></tbody>
+    </table>
+
+    <script>
+        async function fetchUsers() {
+            try {
+                const response = await fetch('https://sua-api.com/api/usuarios');
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar os usuários.');
+                }
+                const data = await response.json();
+                displayUsers(data);
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        function displayUsers(users) {
+            const userList = document.getElementById('user-list');
+            userList.innerHTML = '';
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.nome}</td>
+                    <td>${user.email}</td>
+                    <td><button class="edit-button" onclick="editUser(${user.id})">Editar</button></td>
+                `;
+                userList.appendChild(row);
+            });
+        }
+
+        function editUser(userId) {
+            // Implementar a lógica de edição do usuário
+            alert(`Editar usuário com ID ${userId}`);
+        }
+
+        // Carregar os usuários ao carregar a página
+        window.onload = fetchUsers;
+    </script>
+</body>
+</html>

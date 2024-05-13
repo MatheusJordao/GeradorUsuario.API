@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GeradorUsuario.Application\GeradorUsuario.Application.csproj" />
     <ProjectReference Include="..\GeradorUsuario.Domain\GeradorUsuario.Domain.csproj" />
   </ItemGroup>
 

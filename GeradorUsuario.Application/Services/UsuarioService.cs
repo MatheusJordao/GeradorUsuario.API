@@ -1,25 +1,35 @@
-﻿using GeradorUsuario.Application.Dtos;
-using GeradorUsuario.Application.Interfaces;
+﻿using GeradorUsuario.Application.Interfaces;
+using GeradorUsuario.Domain.DTOs;
 using GeradorUsuario.Domain.Entidades;
 using GeradorUsuario.Domain.Interfaces;
 
 namespace GeradorUsuario.Application.Services
 {
-    public class UsuarioService(IUsuarioRepository usuarioRepository, IEnderecoRepository enderecoRepository) : IUsuarioService
+    public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository = usuarioRepository;
-        private readonly IEnderecoRepository _enderecoRepository = enderecoRepository;
+        
+        public async Task<UsuarioOutputDto?> GetById(Guid uuid)
+        {
+            Usuario? usuarioDb = await _usuarioRepository.GetByIdAsync(uuid);
 
-        public async Task<UsuarioDto?> GetById(Guid uuid)
-        {
-            Usuario usuarioDb = await _usuarioRepository.GetByIdAsync(uuid);
-            return UsuarioDto.FromEntity(usuarioDb);
+            if (usuarioDb == null)
+            {
+                return null;
+            }
+            return UsuarioOutputDto.FromEntity(usuarioDb);
         }
-        public async Task<UsuarioDto> Add(UsuarioDto usuarioDto)
+        public async Task<UsuarioOutputDto> Add(UsuarioInputDto usuarioDto)
         {
-            Usuario usuarioCreate = UsuarioDto.ToEntity(usuarioDto);
+            // Verifica se o email já existe
+            if (await _usuarioRepository.ExistsByEmail(usuarioDto.Email))
+            {
+                throw new ArgumentException("Já existe um usuário com esse endereço de email.");
+            }
+
+            Usuario usuarioCreate = UsuarioInputDto.ToEntity(usuarioDto);
             await _usuarioRepository.AddAsync(usuarioCreate);
-            return usuarioDto;
+            return UsuarioOutputDto.FromEntity(usuarioCreate);
         }
 
         public async Task<bool> Delete(Guid uuid)
@@ -34,13 +44,13 @@ namespace GeradorUsuario.Application.Services
             return true;
         }
 
-        public async Task<IEnumerable<UsuarioDto>?> GetAll()
+        public async Task<IEnumerable<UsuarioOutputDto>?> GetAll()
         {
             List<Usuario> usuarioDb = await _usuarioRepository.GetAllAsync();
-            return usuarioDb.Select(UsuarioDto.FromEntity).ToList();
+            return usuarioDb.Select(UsuarioOutputDto.FromEntity).ToList();
         }
 
-        public async Task<UsuarioDto?> Update(Guid uuid, UsuarioDto usuarioDto)
+        public async Task<UsuarioOutputDto?> Update(Guid uuid, UsuarioInputDto usuarioDto)
         {
             var usuarioDb = await _usuarioRepository.GetByIdAsync(uuid);
             if (usuarioDb == null)
@@ -48,9 +58,15 @@ namespace GeradorUsuario.Application.Services
                 throw new Exception("Usuário não localizado");
             }
 
-            usuarioDb.Update(usuarioDto.PrimeiroNome, usuarioDto.UltimoNome, usuarioDto.Genero, usuarioDto.Email, usuarioDto.NomeUsuario, usuarioDto.SenhaSha256, usuarioDto.Telefone, usuarioDto.Celular, usuarioDto.Foto);
+            //Validar se o email já existe somente quando o email for diferente do atual
+            if (usuarioDto.Email != usuarioDb.Email && await _usuarioRepository.ExistsByEmail(usuarioDto.Email))
+            {
+                throw new ArgumentException("Já existe um usuário com esse endereço de email.");
+            }
+
+            usuarioDb.Update(usuarioDto.NomeUsuario, usuarioDto.Email, usuarioDto.Senha);
             await _usuarioRepository.SaveChangesAsync();
-            return UsuarioDto.FromEntity(usuarioDb);
+            return UsuarioOutputDto.FromEntity(usuarioDb);
         }
     }
 }

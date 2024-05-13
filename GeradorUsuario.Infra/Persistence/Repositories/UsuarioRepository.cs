@@ -40,5 +40,10 @@ namespace GeradorUsuario.Infra.Persistence.Repositories
         {
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<bool> ExistsByEmail(string email)
+        {
+            return await _dbContext.Usuarios.AnyAsync(u => u.Email == email);
+        }
     }
 }

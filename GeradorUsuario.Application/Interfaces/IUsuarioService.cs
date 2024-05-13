@@ -1,13 +1,13 @@
-﻿using GeradorUsuario.Application.Dtos;
+﻿using GeradorUsuario.Domain.DTOs;
 
 namespace GeradorUsuario.Application.Interfaces
 {
     public interface IUsuarioService
     {
-        Task<UsuarioDto?> GetById(Guid uuid);
-        Task<IEnumerable<UsuarioDto>?> GetAll();
-        Task<UsuarioDto> Add(UsuarioDto itemDto);
-        Task<UsuarioDto?> Update(Guid uuid, UsuarioDto itemDto);
+        Task<UsuarioOutputDto?> GetById(Guid uuid);
+        Task<IEnumerable<UsuarioOutputDto>?> GetAll();
+        Task<UsuarioOutputDto> Add(UsuarioInputDto itemDto);
+        Task<UsuarioOutputDto?> Update(Guid uuid, UsuarioInputDto itemDto);
         Task<bool> Delete(Guid uuid);
     }
 }

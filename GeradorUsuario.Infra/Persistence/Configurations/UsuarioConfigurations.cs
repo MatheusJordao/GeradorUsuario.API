@@ -10,11 +10,11 @@ namespace GeradorUsuario.Infra.Persistence.Configurations
         {
             builder.HasKey(u => u.Uuid);
 
-            builder
-                .HasOne(u => u.Endereco)
-                .WithOne()
-                .HasForeignKey<Endereco>(e => e.UsuarioID)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.Property(x => x.Uuid)
+                   .ValueGeneratedOnAdd();
+            builder.Property(u => u.NomeUsuario).IsRequired();
+            builder.Property(u => u.Email).IsRequired();
+            builder.Property(u => u.Senha).IsRequired();
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using GeradorUsuario.Application.Dtos;
-using GeradorUsuario.Application.Interfaces;
+﻿using GeradorUsuario.Application.Interfaces;
+using GeradorUsuario.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeradorUsuario.API.Controllers
@@ -11,9 +11,9 @@ namespace GeradorUsuario.API.Controllers
         private readonly IUsuarioService _usuarioService = usuarioService;
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UsuarioDto>> Get(Guid id)
+        public async Task<ActionResult<UsuarioOutputDto>> Get(Guid id)
         {
-            UsuarioDto? usuarioDto = await _usuarioService.GetById(id);
+            UsuarioOutputDto? usuarioDto = await _usuarioService.GetById(id);
 
             if (usuarioDto == null)
             {
@@ -24,38 +24,34 @@ namespace GeradorUsuario.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetAll()
+        [Route("GetAll")]
+        public async Task<ActionResult<IEnumerable<UsuarioOutputDto>>> GetAll()
         {
-            IEnumerable<UsuarioDto>? itemList = await _usuarioService.GetAll();
+            IEnumerable<UsuarioOutputDto>? itemList = await _usuarioService.GetAll();
 
             return Ok(itemList);
         }
 
         [HttpPost]
-        public async Task<ActionResult<UsuarioDto>> Add(UsuarioDto usuarioDto)
+        public async Task<ActionResult<UsuarioOutputDto>> Add([FromForm] UsuarioInputDto usuarioDto)
         {
-            UsuarioDto newItem = await _usuarioService.Add(usuarioDto);
+            UsuarioOutputDto newItem = await _usuarioService.Add(usuarioDto);
 
             return CreatedAtAction(nameof(Get), new { id = newItem.Uuid }, newItem);
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> Update(int id, UsuarioDto usuarioDto)
-        //{
-        //    if (id != usuarioDto.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid uuid, [FromForm] UsuarioInputDto usuarioDto)
+        {
+            UsuarioOutputDto? item = await _usuarioService.Update(uuid, usuarioDto);
 
-        //    //UsuarioDto? newItem = await _usuarioService.Update(id, usuarioDto);
+            if (item == null)
+            {
+                return NotFound();
+            }
 
-        //    if (newItem == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return NoContent();
-        //}
+            return NoContent();
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)

@@ -15,7 +15,6 @@ namespace GeradorUsuario.Infra.Configurations
             services.AddDbContext<UserDbContext>(options => options.UseNpgsql(connectionString));
 
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-            services.AddScoped<IEnderecoRepository, EnderecoRepository>();
             
             return services;
         }
