@@ -1,0 +1,41 @@
+<div class="card rounded shadow p-3">
+  <div class="d-flex justify-content-center align-items-center mb-3">
+    <button class="btn btn-outline-primary" (click)="novoUsuario()">
+      <i class="fa fa-plus-circle me-1"></i> Novo Usuário
+    </button>
+
+    <button class="btn btn-outline-primary ms-3" (click)="novoUsuarioAleatorio()">
+      <i class="fa fa-plus-circle me-1"></i> Novo Usuário aleatório
+    </button>
+  </div>
+  <table class="table table-striped table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>Nome</th>
+        <th>E-mail</th>
+        <th style="text-align: end;">Ações</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="usuarios && usuarios.length; else noUsuarios">
+      <tr *ngFor="let usuario of usuarios">
+        <td>{{ usuario.nomeUsuario }}</td>
+        <td>{{ usuario.email }}</td>
+        <td class="text-end">
+          <button class="btn btn-primary btn-sm me-2" tooltip="Editar" [routerLink]="['/usuario/detalhe', usuario.uuid]">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button class="btn btn-danger btn-sm" tooltip="Excluir" (click)="excluirUsuario(usuario.uuid)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <ng-template #noUsuarios>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="text-center">Nenhum usuário encontrado</td>
+        </tr>
+      </tfoot>
+    </ng-template>
+  </table>
+</div>
