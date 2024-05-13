@@ -2,11 +2,11 @@
 
 namespace GeradorUsuario.Domain.DTOs
 {
-    public class UsuarioInputDto
+    public class UsuarioInputDto(string nomeUsuario, string email, string senha)
     {
-        public string NomeUsuario { get; set; }
-        public string Email { get; set; }
-        public string Senha { get; set; }
+        public string NomeUsuario { get; set; } = nomeUsuario;
+        public string Email { get; set; } = email;
+        public string Senha { get; set; } = senha;
 
         public static Usuario ToEntity(UsuarioInputDto usuarioDto)
         {

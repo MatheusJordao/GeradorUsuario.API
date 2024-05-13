@@ -5,9 +5,10 @@ using GeradorUsuario.Domain.Interfaces;
 
 namespace GeradorUsuario.Application.Services
 {
-    public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioService
+    public class UsuarioService(IUsuarioRepository usuarioRepository, IRandomRepository randomUserRepository) : IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository = usuarioRepository;
+        private readonly IRandomRepository _randomUserRepository = randomUserRepository;
         
         public async Task<UsuarioOutputDto?> GetById(Guid uuid)
         {
@@ -67,6 +68,26 @@ namespace GeradorUsuario.Application.Services
             usuarioDb.Update(usuarioDto.NomeUsuario, usuarioDto.Email, usuarioDto.Senha);
             await _usuarioRepository.SaveChangesAsync();
             return UsuarioOutputDto.FromEntity(usuarioDb);
+        }
+
+        public async Task<UsuarioOutputDto> AddUsuarioAleatorio()
+        {
+            var usuarioDto = await _randomUserRepository.CreateRandomUser();
+
+            if (usuarioDto == null)
+            {
+                throw new Exception("Ocorreu um erro na geração aleatória de usuário.");
+            }
+
+            // Verifica se o email já existe
+            if (await _usuarioRepository.ExistsByEmail(usuarioDto.Email))
+            {
+                throw new ArgumentException("Já existe um usuário com esse endereço de email.");
+            }
+
+            Usuario usuarioCreate = UsuarioInputDto.ToEntity(usuarioDto);
+            await _usuarioRepository.AddAsync(usuarioCreate);
+            return UsuarioOutputDto.FromEntity(usuarioCreate);
         }
     }
 }

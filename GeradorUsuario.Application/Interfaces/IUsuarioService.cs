@@ -7,6 +7,7 @@ namespace GeradorUsuario.Application.Interfaces
         Task<UsuarioOutputDto?> GetById(Guid uuid);
         Task<IEnumerable<UsuarioOutputDto>?> GetAll();
         Task<UsuarioOutputDto> Add(UsuarioInputDto itemDto);
+        Task<UsuarioOutputDto> AddUsuarioAleatorio();
         Task<UsuarioOutputDto?> Update(Guid uuid, UsuarioInputDto itemDto);
         Task<bool> Delete(Guid uuid);
     }

@@ -39,6 +39,15 @@ namespace GeradorUsuario.API.Controllers
 
             return CreatedAtAction(nameof(Get), new { id = newItem.Uuid }, newItem);
         }
+        
+        [HttpPost]
+        [Route("AddUsuarioAleatorio")]
+        public async Task<ActionResult<UsuarioOutputDto>> AddUsuarioAleatorio()
+        {
+            UsuarioOutputDto newItem = await _usuarioService.AddUsuarioAleatorio();
+
+            return CreatedAtAction(nameof(Get), new { id = newItem.Uuid }, newItem);
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid uuid, [FromForm] UsuarioInputDto usuarioDto)
