@@ -2,3 +2,9 @@ i {
     margin-left: 10px;
     font-size: 45px;
 }
+
+.bg-gradient {
+    background-color: #0054A5; /* Cor primária do gradiente */
+    color: white;
+  }
+  

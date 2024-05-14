@@ -11,6 +11,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class UsuarioDetalheComponent implements OnInit {
   usuarioId: string | null = null;
+  public loading = false;
+  public nomeUsuarioErro: string = '';
+  public emailErro: string = '';
+  public senhaErro: string = '';
 
   public profileForm = new FormGroup({
     id: new FormControl(''),
@@ -32,9 +36,11 @@ export class UsuarioDetalheComponent implements OnInit {
   }
 
   carregarDetalhesUsuario(): void {
+    this.loading = true;
     this.http.get<Usuario>(`https://localhost:7094/api/Usuario/${this.usuarioId}`)
       .subscribe(
         (data) => {
+          this.loading = false;
           if (data) {
             this.profileForm.patchValue({
               id: data.uuid,
@@ -44,12 +50,18 @@ export class UsuarioDetalheComponent implements OnInit {
             });
           } else {
             console.error('Os detalhes do usuário não puderam ser carregados.');
+            this.loading = false;
           }
         },
         error => {
           console.error('Erro ao buscar detalhes do usuário:', error);
+          this.loading = false;
         }
       );
+  }
+
+  voltar(): void {
+    this.router.navigate(['/usuario/lista']);
   }
 
   salvarUsuario(): void {
@@ -61,21 +73,50 @@ export class UsuarioDetalheComponent implements OnInit {
     };
 
     const { uuid, ...usuarioSemUuid } = usuario;
+
+    this.nomeUsuarioErro = '';
+    this.emailErro = '';
+    this.senhaErro = '';
+  
+    const nomeUsuario = usuarioSemUuid.nomeUsuario.trim();
+    const email = usuarioSemUuid.email.trim();
+    const senha = usuarioSemUuid.senha.trim();
+  
+    if (nomeUsuario === '') {
+      this.nomeUsuarioErro = 'O nome de usuário é obrigatório.';
+    }
+  
+    if (email === '') {
+      this.emailErro = 'O e-mail é obrigatório.';
+    }
+  
+    if (senha === '') {
+      this.senhaErro = 'A senha é obrigatória.';
+    }
+  
+    if (this.nomeUsuarioErro === '' || this.emailErro === '' || this.senhaErro === '') {
+      return;
+    }
+
+
     const body = new FormData();
     Object.entries(usuarioSemUuid).forEach(([key, value]) => {
       body.append(key, value);
     });
 
+    this.loading = true;
     if (this.usuarioId !== null) {
       // Lógica para atualizar um usuário existente
       this.http.put<any>(`https://localhost:7094/api/Usuario/${this.usuarioId}`, body)
         .subscribe(
           () => {
             console.log('Usuário atualizado com sucesso.');
+            this.loading = false;
             this.router.navigate(['/usuario/lista']);
           },
           error => {
             console.error('Erro ao atualizar usuário:', error);
+            this.loading = false;
           }
         );
     } else {
@@ -84,10 +125,12 @@ export class UsuarioDetalheComponent implements OnInit {
         .subscribe(
           () => {
             console.log('Novo usuário criado com sucesso.');
+            this.loading = false;
             this.router.navigate(['/usuario/lista']);
           },
           error => {
             console.error('Erro ao criar novo usuário:', error);
+            this.loading = false;
           }
         );
     }

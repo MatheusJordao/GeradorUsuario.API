@@ -1,27 +1,30 @@
 <div class="container">
-  <h2>Detalhes do Usuário</h2>
+  <h2>Editar/Criar usuário</h2>
 
-  <form [formGroup]="profileForm">
-    <div>
-      <label for="id">ID:</label>
-      <input type="text" id="id" formControlName="id" readonly>
-    </div>
-
-    <div>
+  <form [formGroup]="profileForm" class="user-details-form">
+    <div class="form-group mb-3">
       <label for="nomeUsuario">Nome do Usuário:</label>
-      <input type="text" id="nomeUsuario" formControlName="nomeUsuario">
+      <input type="text" id="nomeUsuario" formControlName="nomeUsuario" class="form-control">
+      <span class="text-danger" *ngIf="nomeUsuarioErro">{{ nomeUsuarioErro }}</span>
     </div>
 
-    <div>
+    <div class="form-group mb-3">
       <label for="email">E-mail:</label>
-      <input type="email" id="email" formControlName="email">
+      <input type="email" id="email" formControlName="email" class="form-control">
+      <span class="text-danger" *ngIf="emailErro">{{ emailErro }}</span>
     </div>
     
-    <div>
+    <div class="form-group mb-3">
       <label for="senha">Senha:</label>
-      <input type="password" id="senha" formControlName="senha">
+      <input type="password" id="senha" formControlName="senha" class="form-control">
+      <span class="text-danger" *ngIf="senhaErro">{{ senhaErro }}</span>
     </div>
 
-    <button type="button" (click)="salvarUsuario()">Salvar</button>
+    <button type="button" (click)="voltar()" class="btn btn-outline-primary me-3">Voltar</button>
+    <button type="button" (click)="salvarUsuario()" class="btn btn-outline-primary">Salvar</button>
   </form>
 </div>
+<ngx-loading
+    [show]="loading"
+    [config]="{ backdropBorderRadius: '3px' }"
+  ></ngx-loading>
