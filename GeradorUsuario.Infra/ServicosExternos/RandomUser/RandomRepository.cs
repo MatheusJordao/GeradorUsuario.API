@@ -28,7 +28,11 @@ namespace GeradorUsuario.Infra.ServicosExternos.RandomUser
             }
 
             string nome = $"{randomUser.Name.First} {randomUser.Name.Last}";
-            return new UsuarioInputDto(nome, randomUser.Email, randomUser.Login.Password);
+            return new UsuarioInputDto {
+                NomeUsuario = nome, 
+                Email = randomUser.Email, 
+                Senha = randomUser.Login.Password 
+            };
         }
     }
 }

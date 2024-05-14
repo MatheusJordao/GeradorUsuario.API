@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Usuario } from '../../../_models/Usuario';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -15,7 +15,8 @@ export class UsuarioDetalheComponent implements OnInit {
   public profileForm = new FormGroup({
     id: new FormControl(''),
     nomeUsuario: new FormControl(''),
-    email: new FormControl('')
+    email: new FormControl(''),
+    senha: new FormControl('')
   });
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) { }
@@ -38,7 +39,8 @@ export class UsuarioDetalheComponent implements OnInit {
             this.profileForm.patchValue({
               id: data.uuid,
               nomeUsuario: data.nomeUsuario,
-              email: data.email
+              email: data.email,
+              senha: data.senha
             });
           } else {
             console.error('Os detalhes do usuário não puderam ser carregados.');
@@ -54,12 +56,19 @@ export class UsuarioDetalheComponent implements OnInit {
     const usuario: Usuario = {
       uuid: this.usuarioId === null ? '' : this.usuarioId,
       nomeUsuario: this.profileForm.value.nomeUsuario || '',
-      email: this.profileForm.value.email || ''
+      email: this.profileForm.value.email || '',
+      senha: this.profileForm.value.senha || ''
     };
+
+    const { uuid, ...usuarioSemUuid } = usuario;
+    const body = new FormData();
+    Object.entries(usuarioSemUuid).forEach(([key, value]) => {
+      body.append(key, value);
+    });
 
     if (this.usuarioId !== null) {
       // Lógica para atualizar um usuário existente
-      this.http.put(`https://localhost:7094/api/Usuario/${this.usuarioId}`, usuario)
+      this.http.put<any>(`https://localhost:7094/api/Usuario/${this.usuarioId}`, body)
         .subscribe(
           () => {
             console.log('Usuário atualizado com sucesso.');
@@ -71,7 +80,7 @@ export class UsuarioDetalheComponent implements OnInit {
         );
     } else {
       // Lógica para criar um novo usuário
-      this.http.post(`https://localhost:7094/api/Usuario`, usuario)
+      this.http.post<any>(`https://localhost:7094/api/Usuario`, body)
         .subscribe(
           () => {
             console.log('Novo usuário criado com sucesso.');

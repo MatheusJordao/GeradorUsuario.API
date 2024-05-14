@@ -12,7 +12,7 @@ namespace GeradorUsuario.Domain.Entidades
         public string Email { get; private set; } = email;
         public string Senha { get; private set; } = senha;
 
-        public void Update(string senha, string email, string nomeUsuario)
+        public void Update(string nomeUsuario, string email, string senha)
         {
             Email = email;
             NomeUsuario = nomeUsuario;

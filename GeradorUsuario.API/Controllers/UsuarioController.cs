@@ -50,9 +50,9 @@ namespace GeradorUsuario.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid uuid, [FromForm] UsuarioInputDto usuarioDto)
+        public async Task<IActionResult> Update(Guid id, [FromForm] UsuarioInputDto usuarioDto)
         {
-            UsuarioOutputDto? item = await _usuarioService.Update(uuid, usuarioDto);
+            UsuarioOutputDto? item = await _usuarioService.Update(id, usuarioDto);
 
             if (item == null)
             {

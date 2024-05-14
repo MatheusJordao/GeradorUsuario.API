@@ -10,6 +10,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { UsuarioComponent } from './components/usuario/usuario.component';
 import { UsuarioListaComponent } from './components/usuario/usuario-lista/usuario-lista.component';
+import { UsuarioDetalheComponent } from './components/usuario/usuario-detalhe/usuario-detalhe.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -22,6 +23,7 @@ import { TituloComponent } from './shared/titulo/titulo.component';
       NavComponent,
       UsuarioComponent,
       UsuarioListaComponent,
+      UsuarioDetalheComponent,
       TituloComponent
    ],
   imports: [
